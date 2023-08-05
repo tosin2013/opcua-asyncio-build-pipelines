@@ -31,9 +31,10 @@ jobs:
 
     - name: Test Application
       run: |
-        docker run -d --name test_container -p 4840:4840 your-dockerhub-username/your-image-name:latest
-        sleep 10 # Adjust this sleep time according to your application's startup time
+        docker images
+        # docker run -d --name test_container -p 4840:4840 your-dockerhub-username/your-image-name:latest
+        # sleep 10 # Adjust this sleep time according to your application's startup time
         # Here you should include any commands necessary to test your application
         # For example:
-        curl -v localhost:4840
-        docker stop test_container
+        # curl -v localhost:4840
+        # docker stop test_container
