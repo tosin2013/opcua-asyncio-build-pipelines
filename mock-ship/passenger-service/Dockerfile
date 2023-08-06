@@ -5,7 +5,7 @@ FROM python:3.9
 WORKDIR /app
 
 # Add current directory files to /app in container
-ADD temp-pressure-check.py /app
+ADD passenger-service.py /app
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir asyncua
@@ -17,4 +17,4 @@ EXPOSE 4840
 ENV PYTHONUNBUFFERED=1
 
 # Run main.py when the container launches
-CMD ["python", "-u", "temp-pressure-check.py"]
+CMD ["python", "-u", "passenger-service.py"]
