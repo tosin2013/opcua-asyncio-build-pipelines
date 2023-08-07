@@ -1,7 +1,7 @@
 import asyncio
 import logging
 import json
-import datetime
+from datetime import datetime
 import os 
 from asyncua import Server
 from random import randint, uniform, choice
