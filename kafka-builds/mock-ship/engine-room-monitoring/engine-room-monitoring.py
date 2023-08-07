@@ -3,6 +3,19 @@ import asyncio
 import logging
 import random
 from asyncua import Server, ua
+from aiokafka import AIOKafkaProducer
+
+KAFKA_BROKER = os.environ.get("KAFKA_BROKER", "localhost:9092")
+ship_names = ["Titanic", "QueenMary", "Olympic", "Lusitania", "Britannic", "Aurora", "Polaris", "Voyager", "Endeavor", "Nautilus"]
+KAFKA_TOPIC = random.choice(ship_names)
+
+async def produce_to_kafka(data):
+    producer = AIOKafkaProducer(bootstrap_servers=KAFKA_BROKER)
+    await producer.start()
+    try:
+        await producer.send(KAFKA_TOPIC, json.dumps(data).encode('utf-8'))
+    finally:
+        await producer.stop()
 
 async def main():
     _logger = logging.getLogger("asyncua")
@@ -69,6 +82,20 @@ async def main():
             await humidity.write_value(new_humidity)
             await wind_speed.write_value(new_wind_speed)
             await wave_height.write_value(new_wave_height)
+
+            # Send data to Kafka
+            kafka_data = {
+                "EngineTemperature": new_engine_temp,
+                "EnginePressure": new_engine_pressure,
+                "EngineRPM": new_engine_rpm,
+                "EngineFuelConsumption": new_engine_fuel,
+                "OutsideTemperature": new_outside_temp,
+                "Humidity": new_humidity,
+                "WindSpeed": new_wind_speed,
+                "WaveHeight": new_wave_height
+            }
+
+            await produce_to_kafka(kafka_data)
 
             _logger.info(f"Engine room conditions: Temperature={new_engine_temp}, Pressure={new_engine_pressure}, RPM={new_engine_rpm}, Fuel Consumption={new_engine_fuel}")
             _logger.info(f"Environmental conditions: Outside Temperature={new_outside_temp}, Humidity={new_humidity}, Wind Speed={new_wind_speed}, Wave Height={new_wave_height}")

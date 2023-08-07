@@ -8,7 +8,7 @@ WORKDIR /app
 ADD engine-room-monitoring.py /app
 
 # Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir asyncua
+RUN pip install --no-cache-dir asyncua aiokafka
 
 # Make TCP port 4840 available to the world outside this container
 EXPOSE 4840
