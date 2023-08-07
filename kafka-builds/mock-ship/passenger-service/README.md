@@ -2,6 +2,7 @@
 
 This script simulates the restaurant and pool services of a cruise ship. It uses the OPC UA protocol to expose the data to clients, and it also sends the data to a Kafka topic.
 
+![20230806235744](https://i.imgur.com/Un9iD2M.png)
 ## Requirements
 
 * asyncio
