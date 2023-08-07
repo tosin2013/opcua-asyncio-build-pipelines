@@ -5,6 +5,7 @@ import random
 from asyncua import Server, ua
 from aiokafka import AIOKafkaProducer
 import os
+import json
 
 KAFKA_BROKER = os.environ.get("KAFKA_BROKER", "localhost:9092")
 ship_names = ["Titanic", "QueenMary", "Olympic", "Lusitania", "Britannic", "Aurora", "Polaris", "Voyager", "Endeavor", "Nautilus"]
