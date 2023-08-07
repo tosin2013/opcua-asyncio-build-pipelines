@@ -23,6 +23,7 @@ You can use a Kafka client to subscribe to the topic and receive the data.
 
 ## To-do
 
+* Add Key to kafka producer.
 * Add weather api and geo spacial data so it can track the weather and location of the ship.
 
 ## Credits
