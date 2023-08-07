@@ -3,32 +3,3 @@ https://github.com/FreeOpcUa/opcua-asyncio/tree/master/examples
 https://medium.com/@muhammadfaiznoh/getting-started-with-opc-ua-in-docker-c68a883d5c65
 
 
-
-1. **Manufacturing Process Automation**: OPC UA provides a universal communication platform for various machines and devices on a manufacturing floor, allowing them to work together seamlessly. This includes machines used in assembly lines, monitoring equipment, and quality control devices.
-
-2. **Predictive Maintenance**: OPC UA helps in gathering machine data which can be used for predictive maintenance. By analyzing this data, you can predict potential equipment failures before they happen and schedule maintenance accordingly, which can lead to substantial cost savings and downtime reduction.
-
-3. **Energy Management**: OPC UA can help monitor and control energy consumption in a smart grid. This includes the ability to handle multiple types of energy sources, and the capability to handle large amounts of data from various types of devices and sensors.
-
-4. **Supply Chain Management**: OPC UA can enable real-time tracking and tracing of goods across the supply chain. This includes tracking the production status of goods, their location in the supply chain, and other relevant information.
-
-5. **Smart Agriculture**: OPC UA can be used to manage and control smart farming systems. This includes automated irrigation systems, crop monitoring, and livestock management.
-
-6. **Building Automation**: OPC UA can help manage smart building systems, like HVAC (heating, ventilation, and air conditioning), lighting, and security systems. 
-
-7. **Healthcare**: OPC UA can be utilized in healthcare settings for machine communication, for instance, between various diagnostic devices or between monitoring devices and electronic health record systems.
-
-8. **Oil and Gas Industry**: In oil and gas operations, OPC UA helps in streamlining data exchange from multiple sources such as drilling, production, refining, and distribution units. This facilitates efficient monitoring and control over these operations.
-
-Retail Industry
-
-9. **Supply Chain Visibility**: OPC UA could be used to integrate various systems involved in supply chain management, providing real-time visibility into product location and status. This can help to reduce stockouts and overstock situations, improving inventory turnover.
-
-10. **Smart Stores**: OPC UA can be used in the context of smart stores to integrate various IoT devices such as smart shelves, digital signage, customer tracking sensors, automated checkout systems, and more. This can help to improve customer experience, operational efficiency, and business intelligence.
-
-11. **Point of Sale (POS) Systems Integration**: OPC UA could be used to enable communication between POS systems and other retail systems like inventory management, customer relationship management (CRM), and e-commerce platforms. This can help to streamline retail operations and improve customer service.
-
-12. **Warehouse Automation**: In a retail warehouse, OPC UA could be used to integrate various automated systems, such as conveyor systems, automated storage and retrieval systems (ASRS), and warehouse management systems (WMS). This can help to improve warehouse efficiency and accuracy.
-
-13. **Real-time Sales Analysis**: OPC UA can help to collect sales data from various sources in real-time, enabling more timely and accurate sales analysis. This can aid in making better business decisions.
-

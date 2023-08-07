@@ -1,4 +1,4 @@
-# README
+# Passenger Service Simulator
 
 This script simulates the restaurant and pool services of a cruise ship. It uses the OPC UA protocol to expose the data to clients, and it also sends the data to a Kafka topic.
 

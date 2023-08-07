@@ -1,4 +1,4 @@
-# README
+# Engine Room Monitoring Simulator
 
 This script simulates the engine room and environmental conditions of a ship. It uses the OPC UA protocol to expose the data to clients, and it also sends the data to a Kafka topic.
 
