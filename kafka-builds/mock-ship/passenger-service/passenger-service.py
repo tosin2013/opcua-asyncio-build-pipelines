@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import json
+import datetime
 import os 
 from asyncua import Server
 from random import randint, uniform, choice
@@ -45,8 +46,13 @@ class CruiseServiceSimulator:
         self.producer = AIOKafkaProducer(bootstrap_servers=self.kafka_bootstrap_servers)
         await self.producer.start()
 
-    async def push_to_kafka(self, data):
-        await self.producer.send("cruise_service_updates", value=json.dumps(data))
+    async def push_to_kafka(self, data: dict):
+        kafka_data = {
+            "timestamp": datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
+            "data": data
+        }
+        # Encode the JSON string to bytes before sending
+        await self.producer.send("cruise_service_updates", value=json.dumps(kafka_data).encode('utf-8'))
 
     async def simulate_services(self):
         restaurant_change = randint(-5, 5)
