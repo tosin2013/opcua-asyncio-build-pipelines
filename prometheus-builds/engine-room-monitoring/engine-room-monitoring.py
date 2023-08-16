@@ -19,6 +19,9 @@ WAVE_HEIGHT_GAUGE = Gauge('wave_height', 'Wave Height')
 async def main():
     _logger = logging.getLogger("asyncua")
 
+    # Start Prometheus server
+    start_http_server(8000)
+
     # setup our server
     server = Server()
     await server.init()
@@ -80,7 +83,17 @@ async def main():
             await outside_temp.write_value(new_outside_temp)
             await humidity.write_value(new_humidity)
             await wind_speed.write_value(new_wind_speed)
-            await wave_height.write_value(new_wave_height)
+            await wave_height.write_value(new_wave_height)\
+            
+            # Update Prometheus metrics
+            ENGINE_TEMP_GAUGE.set(new_engine_temp)
+            ENGINE_PRESSURE_GAUGE.set(new_engine_pressure)
+            ENGINE_RPM_GAUGE.set(new_engine_rpm)
+            ENGINE_FUEL_CONSUMPTION_GAUGE.set(new_engine_fuel)
+            OUTSIDE_TEMP_GAUGE.set(new_outside_temp)
+            HUMIDITY_GAUGE.set(new_humidity)
+            WIND_SPEED_GAUGE.set(new_wind_speed)
+            WAVE_HEIGHT_GAUGE.set(new_wave_height)
 
             _logger.info(f"Engine room conditions: Temperature={new_engine_temp}, Pressure={new_engine_pressure}, RPM={new_engine_rpm}, Fuel Consumption={new_engine_fuel}")
             _logger.info(f"Environmental conditions: Outside Temperature={new_outside_temp}, Humidity={new_humidity}, Wind Speed={new_wind_speed}, Wave Height={new_wave_height}")
