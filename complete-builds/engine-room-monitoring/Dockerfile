@@ -12,6 +12,7 @@ RUN pip install --no-cache-dir asyncua aiokafka prometheus_client
 
 # Make TCP port 4840 available to the world outside this container
 EXPOSE 4840
+EXPOSE 8000
 
 # Define environment variable for verbose logging
 ENV PYTHONUNBUFFERED=1

@@ -34,6 +34,9 @@ async def produce_to_kafka(data):
 async def main():
     _logger = logging.getLogger("asyncua")
 
+    # Start Prometheus server
+    start_http_server(8000)
+
     # setup our server
     server = Server()
     await server.init()
@@ -110,7 +113,7 @@ async def main():
             }
 
             await produce_to_kafka(kafka_data)
-            
+
             # Update Prometheus metrics
             ENGINE_TEMP_GAUGE.set(new_engine_temp)
             ENGINE_PRESSURE_GAUGE.set(new_engine_pressure)
