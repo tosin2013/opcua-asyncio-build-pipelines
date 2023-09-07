@@ -9,9 +9,11 @@ import os
 import json
 
 
+
 KAFKA_BROKER = os.environ.get("KAFKA_BROKER", "localhost:9092")
+
 ship_names = ["Titanic", "QueenMary", "Olympic", "Lusitania", "Britannic", "Aurora", "Polaris", "Voyager", "Endeavor", "Nautilus"]
-KAFKA_TOPIC = random.choice(ship_names)
+KAFKA_TOPIC = os.environ.get("KAFKA_TOPIC", random.choice(ship_names))
 
 # Initialize Prometheus metrics
 ENGINE_TEMP_GAUGE = Gauge('engine_temperature', 'Engine Temperature')
