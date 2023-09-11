@@ -15,16 +15,15 @@ KAFKA_BROKER = os.environ.get("KAFKA_BROKER", "localhost:9092")
 ship_names = ["Titanic", "QueenMary", "Olympic", "Lusitania", "Britannic", "Aurora", "Polaris", "Voyager", "Endeavor", "Nautilus"]
 KAFKA_TOPIC = os.environ.get("KAFKA_TOPIC", random.choice(ship_names))
 
-# Initialize Prometheus metrics with a 'job' label
-ENGINE_TEMP_GAUGE = Gauge('engine_temperature', 'Engine Temperature', labelnames=('job',))
-ENGINE_PRESSURE_GAUGE = Gauge('engine_pressure', 'Engine Pressure', labelnames=('job',))
-ENGINE_RPM_GAUGE = Gauge('engine_rpm', 'Engine RPM', labelnames=('job',))
-ENGINE_FUEL_CONSUMPTION_GAUGE = Gauge('engine_fuel_consumption', 'Engine Fuel Consumption', labelnames=('job',))
-OUTSIDE_TEMP_GAUGE = Gauge('outside_temperature', 'Outside Temperature', labelnames=('job',))
-HUMIDITY_GAUGE = Gauge('humidity', 'Humidity', labelnames=('job',))
-WIND_SPEED_GAUGE = Gauge('wind_speed', 'Wind Speed', labelnames=('job',))
-WAVE_HEIGHT_GAUGE = Gauge('wave_height', 'Wave Height', labelnames=('job',))
-
+# Initialize Prometheus metrics
+ENGINE_TEMP_GAUGE = Gauge('engine_temperature', 'Engine Temperature')
+ENGINE_PRESSURE_GAUGE = Gauge('engine_pressure', 'Engine Pressure')
+ENGINE_RPM_GAUGE = Gauge('engine_rpm', 'Engine RPM')
+ENGINE_FUEL_CONSUMPTION_GAUGE = Gauge('engine_fuel_consumption', 'Engine Fuel Consumption')
+OUTSIDE_TEMP_GAUGE = Gauge('outside_temperature', 'Outside Temperature')
+HUMIDITY_GAUGE = Gauge('humidity', 'Humidity')
+WIND_SPEED_GAUGE = Gauge('wind_speed', 'Wind Speed')
+WAVE_HEIGHT_GAUGE = Gauge('wave_height', 'Wave Height')
 
 async def produce_to_kafka(data):
     producer = AIOKafkaProducer(bootstrap_servers=KAFKA_BROKER)
@@ -118,18 +117,14 @@ async def main():
             await produce_to_kafka(kafka_data)
 
             # Update Prometheus metrics
-            # Define a constant for the job name
-            JOB_NAME = "engine-room-monitoring" + "-" + KAFKA_TOPIC.lower()
-
-            # Update Prometheus metrics with the 'job' label set
-            ENGINE_TEMP_GAUGE.labels(job=JOB_NAME).set(new_engine_temp)
-            ENGINE_PRESSURE_GAUGE.labels(job=JOB_NAME).set(new_engine_pressure)
-            ENGINE_RPM_GAUGE.labels(job=JOB_NAME).set(new_engine_rpm)
-            ENGINE_FUEL_CONSUMPTION_GAUGE.labels(job=JOB_NAME).set(new_engine_fuel)
-            OUTSIDE_TEMP_GAUGE.labels(job=JOB_NAME).set(new_outside_temp)
-            HUMIDITY_GAUGE.labels(job=JOB_NAME).set(new_humidity)
-            WIND_SPEED_GAUGE.labels(job=JOB_NAME).set(new_wind_speed)
-            WAVE_HEIGHT_GAUGE.labels(job=JOB_NAME).set(new_wave_height)
+            ENGINE_TEMP_GAUGE.set(new_engine_temp)
+            ENGINE_PRESSURE_GAUGE.set(new_engine_pressure)
+            ENGINE_RPM_GAUGE.set(new_engine_rpm)
+            ENGINE_FUEL_CONSUMPTION_GAUGE.set(new_engine_fuel)
+            OUTSIDE_TEMP_GAUGE.set(new_outside_temp)
+            HUMIDITY_GAUGE.set(new_humidity)
+            WIND_SPEED_GAUGE.set(new_wind_speed)
+            WAVE_HEIGHT_GAUGE.set(new_wave_height)
 
             _logger.info(f"Engine room conditions: Temperature={new_engine_temp}, Pressure={new_engine_pressure}, RPM={new_engine_rpm}, Fuel Consumption={new_engine_fuel}")
             _logger.info(f"Environmental conditions: Outside Temperature={new_outside_temp}, Humidity={new_humidity}, Wind Speed={new_wind_speed}, Wave Height={new_wave_height}")
