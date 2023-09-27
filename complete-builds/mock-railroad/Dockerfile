@@ -8,7 +8,7 @@ WORKDIR /app
 ADD railroad-mocker.py /app
 
 # Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir asyncua aiokafka prometheus_client
+RUN pip install --no-cache-dir asyncua aiokafka prometheus_client requests
 
 # Make TCP port 4840 available to the world outside this container
 EXPOSE 4840
