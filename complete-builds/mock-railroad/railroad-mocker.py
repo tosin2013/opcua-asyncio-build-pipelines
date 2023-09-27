@@ -225,7 +225,7 @@ async def main():
             SECONDARY_SUSPENSION_STIFFNESS_GAUGE.set(secondary_suspension_stiffness)
             DAMPING_RATE_GAUGE.set(damping_rate)
 
-            _logger.info(f"Train conditions: Speed={new_train_speed}, Acceleration={new_train_acceleration}, Braking={new_train_braking}")
+            _logger.info(f"Train conditions: Speed={new_train_speed}, Acceleration={new_train_acceleration}, primary_suspension_stiffness={primary_suspension_stiffness}, secondary_suspension_stiffness={secondary_suspension_stiffness}, damping_rate={damping_rate}")
             _logger.info(f"Environmental conditions: Outside Temperature={outside_temp_value}, Humidity={humidity_value}, Wind Speed={wind_speed_value}")
 
 if __name__ == "__main__":
