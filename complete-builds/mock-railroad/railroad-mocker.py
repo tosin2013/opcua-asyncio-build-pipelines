@@ -117,11 +117,11 @@ async def main():
                 new_train_acceleration = 0
                 new_train_braking = 0
             elif current_speed_difference > 0:
-                new_train_acceleration = min(current_speed_difference / 10.0, 1.0)  # Simplified proportional control
+                new_train_acceleration = float(min(current_speed_difference / 10.0, 1.0))  # Simplified proportional control
                 new_train_braking = 0
             else:
                 new_train_acceleration = 0
-                new_train_braking = min(-current_speed_difference / 10.0, 1.0)  # Simplified proportional control
+                new_train_braking = float(min(-current_speed_difference / 10.0, 1.0))    # Simplified proportional control
 
             # Factor in environmental effects
             new_train_acceleration += (wind_speed_value / 50) - (humidity_value / 100)  # Adjusted for more subtle effects
