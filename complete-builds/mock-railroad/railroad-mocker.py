@@ -126,7 +126,7 @@ async def main():
     outside_temp = await myobj.add_variable(idx, "OutsideTemperature", 25.0)
     humidity = await myobj.add_variable(idx, "Humidity", 70.0)
     wind_speed = await myobj.add_variable(idx, "WindSpeed", 15.0)
-    global integral_error, previous_error
+    global integral_error, previous_error, acceleration_timer, acceleration_duration
     # Define realistic train car parameters
     train_mass = 50000.0  # Mass of the train car in kilograms
     train_inertia = 500000.0  # Inertia of the train car in kg*m^2
