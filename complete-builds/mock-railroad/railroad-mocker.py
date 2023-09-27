@@ -24,6 +24,9 @@ TRAIN_BRAKING_GAUGE = Gauge('train_braking', 'Train Braking')
 OUTSIDE_TEMP_GAUGE = Gauge('outside_temperature', 'Outside Temperature')
 HUMIDITY_GAUGE = Gauge('humidity', 'Humidity')
 WIND_SPEED_GAUGE = Gauge('wind_speed', 'Wind Speed')
+PRIMARY_SUSPENSION_STIFFNESS_GAUGE = Gauge('primary_suspension_stiffness', 'Primary Suspension Stiffness')
+SECONDARY_SUSPENSION_STIFFNESS_GAUGE = Gauge('secondary_suspension_stiffness', 'Secondary Suspension Stiffness')
+DAMPING_RATE_GAUGE = Gauge('damping_rate', 'Damping Rate')
 
 # Get environment variables
 COLLECT_WEATHER_DATA = os.environ.get("COLLECT_WEATHER_DATA", "False").lower() == "true"
@@ -38,6 +41,48 @@ kd = 0.2  # Derivative gain
 # Initialize PID controller variables
 integral_error = 0.0
 previous_error = 0.0
+
+# Define realistic train car parameters
+train_mass = 50000.0  # Mass of the train car in kilograms
+train_inertia = 500000.0  # Inertia of the train car in kg*m^2
+
+# Define realistic suspension parameters
+primary_suspension_stiffness = 30000.0  # Primary suspension stiffness in N/m
+secondary_suspension_stiffness = 15000.0  # Secondary suspension stiffness in N/m
+spring_travel = 0.1  # Spring travel in meters
+damping_rate = 2000.0  # Damping rate in Ns/m
+
+
+def calculate_primary_suspension_stiffness(speed):
+    # Define a linear relationship between speed and primary suspension stiffness
+    # Adjust these parameters as needed to match your desired behavior
+    stiffness_at_zero_speed = 30000.0  # N/m
+    stiffness_at_max_speed = 20000.0  # N/m
+    max_speed = 80.0  # Maximum speed in km/h
+
+    # Interpolate the stiffness based on speed
+    return stiffness_at_zero_speed + (stiffness_at_max_speed - stiffness_at_zero_speed) * (speed / max_speed)
+
+def calculate_secondary_suspension_stiffness(speed):
+    # Define a linear relationship between speed and secondary suspension stiffness
+    # Adjust these parameters as needed to match your desired behavior
+    stiffness_at_zero_speed = 15000.0  # N/m
+    stiffness_at_max_speed = 10000.0  # N/m
+    max_speed = 80.0  # Maximum speed in km/h
+
+    # Interpolate the stiffness based on speed
+    return stiffness_at_zero_speed + (stiffness_at_max_speed - stiffness_at_zero_speed) * (speed / max_speed)
+
+def calculate_damping_rate(speed):
+    # Define a linear relationship between speed and damping rate
+    # Adjust these parameters as needed to match your desired behavior
+    damping_at_zero_speed = 2000.0  # Ns/m
+    damping_at_max_speed = 1000.0  # Ns/m
+    max_speed = 80.0  # Maximum speed in km/h
+
+    # Interpolate the damping rate based on speed
+    return damping_at_zero_speed + (damping_at_max_speed - damping_at_zero_speed) * (speed / max_speed)
+
 
 async def produce_to_kafka(data):
     producer = AIOKafkaProducer(bootstrap_servers=KAFKA_BROKER)
@@ -75,6 +120,10 @@ async def main():
     humidity = await myobj.add_variable(idx, "Humidity", 70.0)
     wind_speed = await myobj.add_variable(idx, "WindSpeed", 15.0)
     global integral_error, previous_error
+    # Add suspension variables
+    primary_suspension_stiffness_variable = await myobj.add_variable(idx, "PrimarySuspensionStiffness", primary_suspension_stiffness)
+    secondary_suspension_stiffness_variable = await myobj.add_variable(idx, "SecondarySuspensionStiffness", secondary_suspension_stiffness)
+    damping_rate_variable = await myobj.add_variable(idx, "DampingRate", damping_rate)
 
     # make the variables writable by clients
     await train_speed.set_writable()
@@ -137,6 +186,16 @@ async def main():
             new_train_speed = max(min(current_train_speed + new_train_acceleration - new_train_braking, 80.0), 40.0)
             await train_speed.write_value(new_train_speed)
 
+             # Update suspension stiffness and damping rates based on speed
+            primary_suspension_stiffness = calculate_primary_suspension_stiffness(new_train_speed)
+            secondary_suspension_stiffness = calculate_secondary_suspension_stiffness(new_train_speed)
+            damping_rate = calculate_damping_rate(new_train_speed)
+
+            await primary_suspension_stiffness_variable.write_value(primary_suspension_stiffness)
+            await secondary_suspension_stiffness_variable.write_value(secondary_suspension_stiffness)
+            await damping_rate_variable.write_value(damping_rate)
+
+
             # Update previous error for the next iteration
             previous_error = current_speed_difference
 
@@ -149,6 +208,9 @@ async def main():
                 "OutsideTemperature": outside_temp_value,
                 "Humidity": humidity_value,
                 "WindSpeed": wind_speed_value,
+                "PrimarySuspensionStiffness": primary_suspension_stiffness,
+                "SecondarySuspensionStiffness": secondary_suspension_stiffness,
+                "DampingRate": damping_rate
             }
 
             await produce_to_kafka(kafka_data)
@@ -160,6 +222,9 @@ async def main():
             OUTSIDE_TEMP_GAUGE.set(outside_temp_value)
             HUMIDITY_GAUGE.set(humidity_value)
             WIND_SPEED_GAUGE.set(wind_speed_value)
+            PRIMARY_SUSPENSION_STIFFNESS_GAUGE.set(primary_suspension_stiffness)
+            SECONDARY_SUSPENSION_STIFFNESS_GAUGE.set(secondary_suspension_stiffness)
+            DAMPING_RATE_GAUGE.set(damping_rate)
 
             _logger.info(f"Train conditions: Speed={new_train_speed}, Acceleration={new_train_acceleration}, Braking={new_train_braking}")
             _logger.info(f"Environmental conditions: Outside Temperature={outside_temp_value}, Humidity={humidity_value}, Wind Speed={wind_speed_value}")
