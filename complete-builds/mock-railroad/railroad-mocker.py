@@ -10,6 +10,9 @@ import json
 from datetime import datetime, timedelta
 
 KAFKA_BROKER = os.environ.get("KAFKA_BROKER", "localhost:9092")
+# Constants for realistic behavior
+TARGET_SPEED = 60.0  # The speed the train tries to maintain
+SPEED_TOLERANCE = 5.0  # The tolerance around the target speed
 
 train_names = ["Express", "Bullet", "Freight", "Local", "Shinkansen", "Metro", "Monorail", "Maglev", "Intercity", "High-speed"]
 KAFKA_TOPIC = os.environ.get("KAFKA_TOPIC", random.choice(train_names))
@@ -106,16 +109,28 @@ async def main():
                 humidity_value = await humidity.get_value()
                 wind_speed_value = await wind_speed.get_value()
 
-            # Update train speed, acceleration, and braking
-            new_train_speed = max(min(current_train_speed + current_train_acceleration - current_train_braking, 80.0), 40.0)
-            new_train_acceleration = random.uniform(-1.0, 1.0) + (wind_speed_value / 10) - (humidity_value / 20)
-            new_train_braking = random.uniform(0.0, 1.0)
+              # Update train speed, acceleration, and braking
+            current_speed_difference = TARGET_SPEED - current_train_speed
 
+            # Decide acceleration or braking based on how far the current speed is from the target
+            if abs(current_speed_difference) < SPEED_TOLERANCE:
+                new_train_acceleration = 0
+                new_train_braking = 0
+            elif current_speed_difference > 0:
+                new_train_acceleration = min(current_speed_difference / 10.0, 1.0)  # Simplified proportional control
+                new_train_braking = 0
+            else:
+                new_train_acceleration = 0
+                new_train_braking = min(-current_speed_difference / 10.0, 1.0)  # Simplified proportional control
+
+            # Factor in environmental effects
+            new_train_acceleration += (wind_speed_value / 50) - (humidity_value / 100)  # Adjusted for more subtle effects
+
+            new_train_speed = max(min(current_train_speed + new_train_acceleration - new_train_braking, 80.0), 40.0)
 
             await train_speed.write_value(new_train_speed)
             await train_acceleration.write_value(new_train_acceleration)
             await train_braking.write_value(new_train_braking)
-
 
             # Send data to Kafka
             kafka_data = {
