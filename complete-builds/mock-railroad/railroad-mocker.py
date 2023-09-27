@@ -12,7 +12,11 @@ from datetime import datetime, timedelta
 KAFKA_BROKER = os.environ.get("KAFKA_BROKER", "localhost:9092")
 # Constants for realistic behavior
 TARGET_SPEED = 60.0  # The speed the train tries to maintain
+MIN_INITIAL_SPEED = 55.0  # Minimum initial speed
+MAX_INITIAL_SPEED = 65.0  # Maximum initial speed
 SPEED_TOLERANCE = 5.0  # The tolerance around the target speed
+MIN_INITIAL_ACCELERATION = -5.0  # Minimum initial acceleration (negative for deceleration)
+MAX_INITIAL_ACCELERATION = 5.0   # Maximum initial acceleration
 
 train_names = ["Express", "Bullet", "Freight", "Local", "Shinkansen", "Metro", "Monorail", "Maglev", "Intercity", "High-speed"]
 KAFKA_TOPIC = os.environ.get("KAFKA_TOPIC", random.choice(train_names))
@@ -100,9 +104,14 @@ async def main():
     # add train object to the server
     myobj = await server.nodes.objects.add_object(idx, "Train")
 
+    # Generate a random initial speed within the specified range
+    initial_speed = random.uniform(MIN_INITIAL_SPEED, MAX_INITIAL_SPEED)
+    initial_acceleration = random.uniform(MIN_INITIAL_ACCELERATION, MAX_INITIAL_ACCELERATION)
+
+
     # add train variables
-    train_speed = await myobj.add_variable(idx, "TrainSpeed", 0.0)
-    train_acceleration = await myobj.add_variable(idx, "TrainAcceleration", 0.0)
+    train_speed = await myobj.add_variable(idx, "TrainSpeed", initial_speed)
+    train_acceleration = await myobj.add_variable(idx, "TrainAcceleration", initial_acceleration)
     train_braking = await myobj.add_variable(idx, "TrainBraking", 0.0)
 
     # add environmental variables
