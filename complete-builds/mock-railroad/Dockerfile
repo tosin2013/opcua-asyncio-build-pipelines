@@ -5,7 +5,7 @@ FROM python:3.9
 WORKDIR /app
 
 # Add current directory files to /app in container
-ADD engine-room-monitoring.py /app
+ADD railroad-mocker.py /app
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir asyncua aiokafka prometheus_client
@@ -18,4 +18,4 @@ EXPOSE 8000
 ENV PYTHONUNBUFFERED=1
 
 # Run main.py when the container launches
-CMD ["python", "-u", "engine-room-monitoring.py"]
+CMD ["python", "-u", "railroad-mocker.py"]
