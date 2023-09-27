@@ -38,9 +38,9 @@ OPENWEATHERMAP_API_KEY = os.environ.get("OPENWEATHERMAP_API_KEY", "")
 CITY_NAME = os.environ.get("CITY_NAME", "")
 
 # Define PID controller parameters
-kp = 0.5  # Proportional gain
-ki = 0.1  # Integral gain
-kd = 0.2  # Derivative gain
+kp = 1.0  # Proportional gain
+ki = 0.2  # Integral gain
+kd = 0.4  # Derivative gain
 
 # Initialize PID controller variables
 integral_error = 0.0
@@ -196,6 +196,7 @@ async def main():
 
             # Update train speed
             new_train_speed = max(min(current_train_speed + new_train_acceleration - new_train_braking, 80.0), 40.0)
+            new_train_speed = round(new_train_speed)
             await train_speed.write_value(new_train_speed)
 
              # Update suspension stiffness and damping rates based on speed
