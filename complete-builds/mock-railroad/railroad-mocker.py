@@ -14,9 +14,9 @@ KAFKA_BROKER = os.environ.get("KAFKA_BROKER", "localhost:9092")
 TARGET_SPEED = int(os.environ.get("TARGET_SPEED", 60.0))  # The speed the train tries to maintain
 MIN_INITIAL_SPEED = int(os.environ.get("MIN_INITIAL_SPEED", 45.0 )) # Minimum initial speed
 MAX_INITIAL_SPEED = int(os.environ.get("MAX_INITIAL_SPEED", 65.0))  # Maximum initial speed
-SPEED_TOLERANCE = 5.0  # The tolerance around the target speed
-MIN_INITIAL_ACCELERATION = -5.0  # Minimum initial acceleration (negative for deceleration)
-MAX_INITIAL_ACCELERATION = 5.0   # Maximum initial acceleration
+SPEED_TOLERANCE = int(os.environ.get("SPEED_TOLERANCE", 5.00))   # The tolerance around the target speed
+MIN_INITIAL_ACCELERATION =  int(os.environ.get("SPEED_TOLERANCE", -5.0))  # Minimum initial acceleration (negative for deceleration)
+MAX_INITIAL_ACCELERATION =  int(os.environ.get("SPEED_TOLERANCE", 5.0))   # Maximum initial acceleration
 
 # Override with environment variables if available
 acceleration_duration = int(os.environ.get("ACCELERATION_DURATION", 300))# Duration of acceleration in seconds (adjust as needed)
