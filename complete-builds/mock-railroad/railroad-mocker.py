@@ -42,16 +42,6 @@ kd = 0.2  # Derivative gain
 integral_error = 0.0
 previous_error = 0.0
 
-# Define realistic train car parameters
-train_mass = 50000.0  # Mass of the train car in kilograms
-train_inertia = 500000.0  # Inertia of the train car in kg*m^2
-
-# Define realistic suspension parameters
-primary_suspension_stiffness = 30000.0  # Primary suspension stiffness in N/m
-secondary_suspension_stiffness = 15000.0  # Secondary suspension stiffness in N/m
-spring_travel = 0.1  # Spring travel in meters
-damping_rate = 2000.0  # Damping rate in Ns/m
-
 
 def calculate_primary_suspension_stiffness(speed):
     # Define a linear relationship between speed and primary suspension stiffness
@@ -120,6 +110,15 @@ async def main():
     humidity = await myobj.add_variable(idx, "Humidity", 70.0)
     wind_speed = await myobj.add_variable(idx, "WindSpeed", 15.0)
     global integral_error, previous_error
+    # Define realistic train car parameters
+    train_mass = 50000.0  # Mass of the train car in kilograms
+    train_inertia = 500000.0  # Inertia of the train car in kg*m^2
+
+    # Define realistic suspension parameters
+    primary_suspension_stiffness = 30000.0  # Primary suspension stiffness in N/m
+    secondary_suspension_stiffness = 15000.0  # Secondary suspension stiffness in N/m
+    spring_travel = 0.1  # Spring travel in meters
+    damping_rate = 2000.0  # Damping rate in Ns/m
     # Add suspension variables
     primary_suspension_stiffness_variable = await myobj.add_variable(idx, "PrimarySuspensionStiffness", primary_suspension_stiffness)
     secondary_suspension_stiffness_variable = await myobj.add_variable(idx, "SecondarySuspensionStiffness", secondary_suspension_stiffness)
