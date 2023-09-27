@@ -84,9 +84,10 @@ async def main():
             current_train_braking = await train_braking.get_value()
 
             # Update train speed, acceleration, and braking
-            new_train_speed = max(min(current_train_speed + current_train_acceleration - current_train_braking, 300.0), 0.0)
-            new_train_acceleration = random.uniform(-1.0, 1.0)
+            new_train_speed = max(min(current_train_speed + current_train_acceleration - current_train_braking, 80.0), 40.0)
+            new_train_acceleration = random.uniform(-1.0, 1.0) + (wind_speed_value / 10) - (humidity_value / 20)
             new_train_braking = random.uniform(0.0, 1.0)
+
 
             await train_speed.write_value(new_train_speed)
             await train_acceleration.write_value(new_train_acceleration)
