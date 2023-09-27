@@ -197,11 +197,11 @@ async def main():
              # Check if it's time to accelerate or decelerate
             if acceleration_timer <= acceleration_duration:
                 # During acceleration phase, increase speed
-                random_acceleration = random.uniform(0.1, 0.5)  # Random positive acceleration
+                random_acceleration = random.uniform(1.0, 5.0)  # Random positive acceleration
                 acceleration_timer += 1
             else:
                 # During deceleration phase, decrease speed randomly
-                random_acceleration = random.uniform(-0.2, 0.2)  # Random acceleration, can be negative
+                random_acceleration = random.uniform(-1.0, 2.0)  # Random acceleration, can be negative
                 # Optionally, reset the acceleration timer to simulate varying intervals
                 acceleration_timer = random.randint(300, 600)  # Random duration for next acceleration phase
 
