@@ -74,6 +74,7 @@ async def main():
     outside_temp = await myobj.add_variable(idx, "OutsideTemperature", 25.0)
     humidity = await myobj.add_variable(idx, "Humidity", 70.0)
     wind_speed = await myobj.add_variable(idx, "WindSpeed", 15.0)
+    global integral_error, previous_error
 
     # make the variables writable by clients
     await train_speed.set_writable()
