@@ -105,8 +105,12 @@ async def main():
     myobj = await server.nodes.objects.add_object(idx, "Train")
 
     # Generate a random initial speed within the specified range
-    initial_speed = random.uniform(MIN_INITIAL_SPEED, MAX_INITIAL_SPEED)
-    initial_acceleration = random.uniform(MIN_INITIAL_ACCELERATION, MAX_INITIAL_ACCELERATION)
+    initial_speed = random.randint(MIN_INITIAL_SPEED, MAX_INITIAL_SPEED)
+    initial_acceleration = random.randint(MIN_INITIAL_ACCELERATION, MAX_INITIAL_ACCELERATION)
+
+    # Convert the initial speed to a floating-point number
+    initial_speed = float(initial_speed_int)
+    initial_acceleration = float(initial_acceleration_int)
 
 
     # add train variables
