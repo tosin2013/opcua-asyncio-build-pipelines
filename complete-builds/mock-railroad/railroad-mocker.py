@@ -83,16 +83,6 @@ async def main():
             current_train_acceleration = await train_acceleration.get_value()
             current_train_braking = await train_braking.get_value()
 
-            # Update train speed, acceleration, and braking
-            new_train_speed = max(min(current_train_speed + current_train_acceleration - current_train_braking, 80.0), 40.0)
-            new_train_acceleration = random.uniform(-1.0, 1.0) + (wind_speed_value / 10) - (humidity_value / 20)
-            new_train_braking = random.uniform(0.0, 1.0)
-
-
-            await train_speed.write_value(new_train_speed)
-            await train_acceleration.write_value(new_train_acceleration)
-            await train_braking.write_value(new_train_braking)
-
             # Get current time and calculate elapsed time
             current_time = datetime.now()
             elapsed_time = current_time - start_time
@@ -115,6 +105,17 @@ async def main():
                 outside_temp_value = await outside_temp.get_value()
                 humidity_value = await humidity.get_value()
                 wind_speed_value = await wind_speed.get_value()
+
+            # Update train speed, acceleration, and braking
+            new_train_speed = max(min(current_train_speed + current_train_acceleration - current_train_braking, 80.0), 40.0)
+            new_train_acceleration = random.uniform(-1.0, 1.0) + (wind_speed_value / 10) - (humidity_value / 20)
+            new_train_braking = random.uniform(0.0, 1.0)
+
+
+            await train_speed.write_value(new_train_speed)
+            await train_acceleration.write_value(new_train_acceleration)
+            await train_braking.write_value(new_train_braking)
+
 
             # Send data to Kafka
             kafka_data = {
