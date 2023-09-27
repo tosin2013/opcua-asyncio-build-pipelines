@@ -117,13 +117,13 @@ async def main():
 
             # Send data to Kafka
             kafka_data = {
-                "ElapsedTime": (start_time + elapsed_time).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+                "ElapsedTime": (start_time + elapsed_time).strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 "TrainSpeed": new_train_speed,
                 "TrainAcceleration": new_train_acceleration,
                 "TrainBraking": new_train_braking,
                 "OutsideTemperature": outside_temp_value,
                 "Humidity": humidity_value,
-                "WindSpeed": wind_speed_value,")
+                "WindSpeed": wind_speed_value,
             }
 
             await produce_to_kafka(kafka_data)
