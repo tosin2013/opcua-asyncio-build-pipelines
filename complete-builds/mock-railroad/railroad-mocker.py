@@ -30,6 +30,15 @@ COLLECT_WEATHER_DATA = os.environ.get("COLLECT_WEATHER_DATA", "False").lower() =
 OPENWEATHERMAP_API_KEY = os.environ.get("OPENWEATHERMAP_API_KEY", "")
 CITY_NAME = os.environ.get("CITY_NAME", "")
 
+# Define PID controller parameters
+kp = 0.5  # Proportional gain
+ki = 0.1  # Integral gain
+kd = 0.2  # Derivative gain
+
+# Initialize PID controller variables
+integral_error = 0.0
+previous_error = 0.0
+
 async def produce_to_kafka(data):
     producer = AIOKafkaProducer(bootstrap_servers=KAFKA_BROKER)
     await producer.start()
@@ -109,28 +118,26 @@ async def main():
                 humidity_value = await humidity.get_value()
                 wind_speed_value = await wind_speed.get_value()
 
-              # Update train speed, acceleration, and braking
+            # Calculate PID terms
             current_speed_difference = TARGET_SPEED - current_train_speed
+            proportional = kp * current_speed_difference
+            integral_error += ki * current_speed_difference
+            derivative_error = kd * (current_speed_difference - previous_error)
 
-            # Decide acceleration or braking based on how far the current speed is from the target
-            if abs(current_speed_difference) < SPEED_TOLERANCE:
-                new_train_acceleration = 0
-                new_train_braking = 0
-            elif current_speed_difference > 0:
-                new_train_acceleration = float(min(current_speed_difference / 10.0, 1.0))  # Simplified proportional control
-                new_train_braking = 0
-            else:
-                new_train_acceleration = 0
-                new_train_braking = float(min(-current_speed_difference / 10.0, 1.0))    # Simplified proportional control
+            # Calculate acceleration and braking
+            new_train_acceleration = proportional + integral_error + derivative_error
+            new_train_braking = 0  # You can adjust this as needed
 
-            # Factor in environmental effects
-            new_train_acceleration += (wind_speed_value / 50) - (humidity_value / 100)  # Adjusted for more subtle effects
+            # Limit acceleration and braking to reasonable values
+            new_train_acceleration = max(min(new_train_acceleration, 1.0), -1.0)
+            new_train_braking = max(min(new_train_braking, 1.0), 0.0)
 
+            # Update train speed
             new_train_speed = max(min(current_train_speed + new_train_acceleration - new_train_braking, 80.0), 40.0)
-
             await train_speed.write_value(new_train_speed)
-            await train_acceleration.write_value(new_train_acceleration)
-            await train_braking.write_value(new_train_braking)
+
+            # Update previous error for the next iteration
+            previous_error = current_speed_difference
 
             # Send data to Kafka
             kafka_data = {
