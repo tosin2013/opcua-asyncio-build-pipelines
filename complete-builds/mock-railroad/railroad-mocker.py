@@ -37,10 +37,10 @@ COLLECT_WEATHER_DATA = os.environ.get("COLLECT_WEATHER_DATA", "False").lower() =
 OPENWEATHERMAP_API_KEY = os.environ.get("OPENWEATHERMAP_API_KEY", "")
 CITY_NAME = os.environ.get("CITY_NAME", "")
 
-# Define PID controller parameters
-kp = 1.0  # Proportional gain
-ki = 0.1  # Integral gain
-kd = 0.2  # Derivative gain
+# Define PID controller parameters with default values
+kp = float(os.environ.get("KP", 1.0))  # Proportional gain
+ki = float(os.environ.get("KI", 0.1))  # Integral gain
+kd = float(os.environ.get("KD", 0.2))  # Derivative gain
 
 # Initialize PID controller variables
 integral_error = 0.0
