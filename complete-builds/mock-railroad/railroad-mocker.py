@@ -11,9 +11,9 @@ from datetime import datetime, timedelta
 
 KAFKA_BROKER = os.environ.get("KAFKA_BROKER", "localhost:9092")
 # Constants for realistic behavior
-TARGET_SPEED = 60.0  # The speed the train tries to maintain
-MIN_INITIAL_SPEED = 55.0  # Minimum initial speed
-MAX_INITIAL_SPEED = 65.0  # Maximum initial speed
+TARGET_SPEED = int(os.environ.get("TARGET_SPEED", 60.0))  # The speed the train tries to maintain
+MIN_INITIAL_SPEED = int(os.environ.get("MIN_INITIAL_SPEED", 45.0 )) # Minimum initial speed
+MAX_INITIAL_SPEED = int(os.environ.get("MAX_INITIAL_SPEED", 65.0))  # Maximum initial speed
 SPEED_TOLERANCE = 5.0  # The tolerance around the target speed
 MIN_INITIAL_ACCELERATION = -5.0  # Minimum initial acceleration (negative for deceleration)
 MAX_INITIAL_ACCELERATION = 5.0   # Maximum initial acceleration
