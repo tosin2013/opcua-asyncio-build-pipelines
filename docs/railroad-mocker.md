@@ -7,7 +7,7 @@ This application simulates a train by generating realistic telemetry data and pu
 * [OpenShift Deployment](https://github.com/tosin2013/edge-anomaly-detection/tree/main/components/applications/mock-railroad/overlays)
 
 ## Research Paper
-(Anomaly Detection Method in Railway Using Signal Processing and Deep Learning)[https://www.mdpi.com/2076-3417/12/24/12901]
+[Anomaly Detection Method in Railway Using Signal Processing and Deep Learning](https://www.mdpi.com/2076-3417/12/24/12901)
 
 ## Usage
 The app is designed to run in a Docker container. The following environment variables can be configured:
