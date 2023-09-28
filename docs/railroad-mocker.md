@@ -3,6 +3,9 @@
 ## Overview
 This application simulates a train by generating realistic telemetry data and publishing it to Kafka and Prometheus. It implements a PID controller to regulate the train's speed and acceleration/braking. The train parameters and environment data are also randomized for realistic variability.
 
+[Code](complete-builds/mock-railroad/railroad-mocker.py)
+[OpenShift Deployment](https://github.com/tosin2013/edge-anomaly-detection/tree/main/components/applications/mock-railroad/overlays)
+
 ## Usage
 The app is designed to run in a Docker container. The following environment variables can be configured:
 
