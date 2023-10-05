@@ -163,9 +163,11 @@ async def main():
             await asyncio.sleep(1)
 
             current_train_speed = await train_speed.get_value()
-
-            if new_tonnage == None:
-                new_tonnage = await train_tonnage.get_value()
+            
+            # Optional tonnage randomization
+            if random.choice([True, False]):  # 50% chance
+                new_tonnage = random.uniform(0.8 * DEFAULT_TONNAGE, 1.2 * DEFAULT_TONNAGE)  # Vary tonnage by ±20%
+                await train_tonnage.write_value(new_tonnage)
 
 
             #current_train_acceleration = await train_acceleration.get_value()
@@ -275,10 +277,7 @@ async def main():
             _logger.info(f"Environmental conditions: Outside Temperature={outside_temp_value}, Humidity={humidity_value}, Wind Speed={wind_speed_value}")
 
 
-            # Optional tonnage randomization
-            if random.choice([True, False]):  # 50% chance
-                new_tonnage = random.uniform(0.8 * DEFAULT_TONNAGE, 1.2 * DEFAULT_TONNAGE)  # Vary tonnage by ±20%
-                await train_tonnage.write_value(new_tonnage)
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
