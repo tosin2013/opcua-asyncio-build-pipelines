@@ -173,8 +173,6 @@ async def main():
             await asyncio.sleep(1)
 
             current_train_speed = await train_speed.get_value()
-            
-            last_tonnage_change_time = datetime.now() - timedelta(seconds=TONNAGE_CHANGE_INTERVAL)  # initializing to ensure immediate update on first run
 
             # Then, inside your while loop:
             current_time = datetime.now()
