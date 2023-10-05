@@ -18,6 +18,7 @@ SPEED_TOLERANCE = int(os.environ.get("SPEED_TOLERANCE", 5.00))   # The tolerance
 MIN_INITIAL_ACCELERATION =  int(os.environ.get("SPEED_TOLERANCE", -5.0))  # Minimum initial acceleration (negative for deceleration)
 MAX_INITIAL_ACCELERATION =  int(os.environ.get("SPEED_TOLERANCE", 5.0))   # Maximum initial acceleration
 DEFAULT_TONNAGE = float(os.environ.get("DEFAULT_TONNAGE", 1000.0))  # Default train tonnage in tons
+TONNAGE_CHANGE_INTERVAL = int(os.environ.get("TONNAGE_CHANGE_INTERVAL", 180))  # Defaults to 3 minutes if not set
 
 # Override with environment variables if available
 acceleration_duration = int(os.environ.get("ACCELERATION_DURATION", 300))# Duration of acceleration in seconds (adjust as needed)
@@ -164,10 +165,16 @@ async def main():
 
             current_train_speed = await train_speed.get_value()
             
-            # Optional tonnage randomization
-            if random.choice([True, False]):  # 50% chance
+            # Inside your main function or before entering the while loop:
+            last_tonnage_change_time = datetime.now()  # initializing to the current time
+
+            # Then, inside your while loop:
+            current_time = datetime.now()
+
+            if (current_time - last_tonnage_change_time).seconds >= TONNAGE_CHANGE_INTERVAL:
                 new_tonnage = random.uniform(0.8 * DEFAULT_TONNAGE, 1.2 * DEFAULT_TONNAGE)  # Vary tonnage by ±20%
                 await train_tonnage.write_value(new_tonnage)
+                last_tonnage_change_time = current_time  # reset the last change time
 
 
             #current_train_acceleration = await train_acceleration.get_value()
