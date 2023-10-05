@@ -154,6 +154,11 @@ async def main():
     await outside_temp.set_writable()
     await humidity.set_writable()
     await wind_speed.set_writable()
+    await primary_suspension_stiffness_variable.set_writable()
+    await secondary_suspension_stiffness_variable.set_writable()
+    await damping_rate_variable.set_writable()
+    await train_tonnage.set_writable()
+    
 
     _logger.info("Starting server!")
 
