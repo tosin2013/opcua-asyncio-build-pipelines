@@ -17,6 +17,7 @@ MAX_INITIAL_SPEED = int(os.environ.get("MAX_INITIAL_SPEED", 65.0))  # Maximum in
 SPEED_TOLERANCE = int(os.environ.get("SPEED_TOLERANCE", 5.00))   # The tolerance around the target speed
 MIN_INITIAL_ACCELERATION =  int(os.environ.get("SPEED_TOLERANCE", -5.0))  # Minimum initial acceleration (negative for deceleration)
 MAX_INITIAL_ACCELERATION =  int(os.environ.get("SPEED_TOLERANCE", 5.0))   # Maximum initial acceleration
+DEFAULT_TONNAGE = float(os.environ.get("DEFAULT_TONNAGE", 1000.0))  # Default train tonnage in tons
 
 # Override with environment variables if available
 acceleration_duration = int(os.environ.get("ACCELERATION_DURATION", 300))# Duration of acceleration in seconds (adjust as needed)
@@ -35,6 +36,7 @@ WIND_SPEED_GAUGE = Gauge('wind_speed', 'Wind Speed')
 PRIMARY_SUSPENSION_STIFFNESS_GAUGE = Gauge('primary_suspension_stiffness', 'Primary Suspension Stiffness')
 SECONDARY_SUSPENSION_STIFFNESS_GAUGE = Gauge('secondary_suspension_stiffness', 'Secondary Suspension Stiffness')
 DAMPING_RATE_GAUGE = Gauge('damping_rate', 'Damping Rate')
+TRAIN_TONNAGE = Gauge('train_tonnage', 'Train Tonnage')
 
 # Get environment variables
 COLLECT_WEATHER_DATA = os.environ.get("COLLECT_WEATHER_DATA", "False").lower() == "true"
@@ -130,6 +132,9 @@ async def main():
     # Define realistic train car parameters
     train_mass = 50000.0  # Mass of the train car in kilograms
     train_inertia = 500000.0  # Inertia of the train car in kg*m^2
+    train_tonnage = await myobj.add_variable(idx, "TrainTonnage", DEFAULT_TONNAGE)
+    
+
 
     # Define realistic suspension parameters
     primary_suspension_stiffness = 30000.0  # Primary suspension stiffness in N/m
@@ -158,8 +163,10 @@ async def main():
             await asyncio.sleep(1)
 
             current_train_speed = await train_speed.get_value()
-            current_train_acceleration = await train_acceleration.get_value()
-            current_train_braking = await train_braking.get_value()
+            current_train_tonnage = await train_tonnage.get_value()
+
+            #current_train_acceleration = await train_acceleration.get_value()
+            #current_train_braking = await train_braking.get_value()
 
             # Get current time and calculate elapsed time
             current_time = datetime.now()
@@ -184,11 +191,12 @@ async def main():
                 humidity_value = await humidity.get_value()
                 wind_speed_value = await wind_speed.get_value()
 
-            # Calculate PID terms
+            # Adjusted PID calculation with tonnage factor
+            tonnage_factor = DEFAULT_TONNAGE / current_train_tonnage  # Assuming more tonnage means less acceleration
             current_speed_difference = TARGET_SPEED - current_train_speed
-            proportional = kp * current_speed_difference
-            integral_error += ki * current_speed_difference
-            derivative_error = kd * (current_speed_difference - previous_error)
+            proportional = kp * current_speed_difference * tonnage_factor
+            integral_error += ki * current_speed_difference * tonnage_factor
+            derivative_error = kd * (current_speed_difference - previous_error) * tonnage_factor
 
             # Calculate acceleration and braking
             new_train_acceleration = proportional + integral_error + derivative_error
@@ -242,7 +250,8 @@ async def main():
                 "WindSpeed": wind_speed_value,
                 "PrimarySuspensionStiffness": primary_suspension_stiffness,
                 "SecondarySuspensionStiffness": secondary_suspension_stiffness,
-                "DampingRate": damping_rate
+                "DampingRate": damping_rate,
+                "TrainTonnage": new_tonnage
             }
 
             await produce_to_kafka(kafka_data)
@@ -257,9 +266,16 @@ async def main():
             PRIMARY_SUSPENSION_STIFFNESS_GAUGE.set(primary_suspension_stiffness)
             SECONDARY_SUSPENSION_STIFFNESS_GAUGE.set(secondary_suspension_stiffness)
             DAMPING_RATE_GAUGE.set(damping_rate)
+            TRAIN_TONNAGE.set(new_tonnage)
 
-            _logger.info(f"Train conditions: Speed={new_train_speed}, Acceleration={new_train_acceleration}, primary_suspension_stiffness={primary_suspension_stiffness}, secondary_suspension_stiffness={secondary_suspension_stiffness}, damping_rate={damping_rate}")
+            _logger.info(f"Train conditions: Speed={new_train_speed}, Acceleration={new_train_acceleration}, primary_suspension_stiffness={primary_suspension_stiffness}, secondary_suspension_stiffness={secondary_suspension_stiffness}, damping_rate={damping_rate}, Train Tonnage={current_train_tonnage}")
             _logger.info(f"Environmental conditions: Outside Temperature={outside_temp_value}, Humidity={humidity_value}, Wind Speed={wind_speed_value}")
+
+
+            # Optional tonnage randomization
+            if random.choice([True, False]):  # 50% chance
+                new_tonnage = random.uniform(0.8 * DEFAULT_TONNAGE, 1.2 * DEFAULT_TONNAGE)  # Vary tonnage by ±20%
+                await train_tonnage.write_value(new_tonnage)
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)

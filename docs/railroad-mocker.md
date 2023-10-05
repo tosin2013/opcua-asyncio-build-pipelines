@@ -19,6 +19,7 @@ The app is designed to run in a Docker container. The following environment vari
 * `COLLECT_WEATHER_DATA` - Set to True to retrieve live weather data (requires API key, default: False)
 * `OPENWEATHERMAP_API_KEY` - API key for OpenWeatherMap
 * `CITY_NAME` - City to retrieve weather for
+* `DEFAULT_TONNAGE` - Default train tonnage (default: 1000)
   
 The app publishes the following metrics to Kafka and Prometheus:
 
@@ -32,6 +33,7 @@ The app publishes the following metrics to Kafka and Prometheus:
 * Primary suspension stiffness
 * Secondary suspension stiffness
 * Damping rate
+* Train tonnage
 
 Prometheus metrics are exposed on port 8000.
 
