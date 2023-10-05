@@ -173,19 +173,20 @@ async def main():
 
             current_train_speed = await train_speed.get_value()
             
-            # Inside your main function or before entering the while loop:
-            last_tonnage_change_time = datetime.now()  # initializing to the current time
+            last_tonnage_change_time = datetime.now() - timedelta(seconds=TONNAGE_CHANGE_INTERVAL)  # initializing to ensure immediate update on first run
+            first_run = True  # flag to check if it's the first iteration of the loop
 
             # Then, inside your while loop:
             current_time = datetime.now()
 
-            if (current_time - last_tonnage_change_time).seconds >= TONNAGE_CHANGE_INTERVAL:
+            if first_run or (current_time - last_tonnage_change_time).seconds >= TONNAGE_CHANGE_INTERVAL:
                 update_tonnage = random.uniform(0.8 * DEFAULT_TONNAGE, 1.2 * DEFAULT_TONNAGE)  # Vary tonnage by ±20%
                 print(f"Updating tonnage at {current_time}")
                 await train_tonnage.write_value(update_tonnage)
                 new_tonnage = await train_tonnage.get_value()
                 print(f"Updated tonnage to {update_tonnage}")
                 last_tonnage_change_time = current_time  # reset the last change time
+                first_run = False  # set the flag to False after the first run
 
 
 
