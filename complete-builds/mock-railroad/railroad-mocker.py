@@ -163,7 +163,10 @@ async def main():
             await asyncio.sleep(1)
 
             current_train_speed = await train_speed.get_value()
-            current_train_tonnage = await train_tonnage.get_value()
+
+            if new_tonnage == None:
+                new_tonnage = await train_tonnage.get_value()
+
 
             #current_train_acceleration = await train_acceleration.get_value()
             #current_train_braking = await train_braking.get_value()
