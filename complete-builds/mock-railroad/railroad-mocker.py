@@ -181,7 +181,10 @@ async def main():
 
             if (current_time - last_tonnage_change_time).seconds >= TONNAGE_CHANGE_INTERVAL:
                 update_tonnage = random.uniform(0.8 * DEFAULT_TONNAGE, 1.2 * DEFAULT_TONNAGE)  # Vary tonnage by ±20%
+                print(f"Updating tonnage at {current_time}")
                 await train_tonnage.write_value(update_tonnage)
+                new_tonnage = await train_tonnage.get_value()
+                print(f"Updated tonnage to {update_tonnage}")
                 last_tonnage_change_time = current_time  # reset the last change time
 
 
@@ -213,7 +216,6 @@ async def main():
                 wind_speed_value = await wind_speed.get_value()
 
             # Adjusted PID calculation with tonnage factor
-            new_tonnage = await train_tonnage.get_value()
             tonnage_factor = DEFAULT_TONNAGE / new_tonnage  # Assuming more tonnage means less acceleration
             current_speed_difference = TARGET_SPEED - current_train_speed
             proportional = kp * current_speed_difference * tonnage_factor
