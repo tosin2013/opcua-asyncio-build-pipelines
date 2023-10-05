@@ -166,7 +166,8 @@ async def main():
 
     # Initialize last_tonnage_change_time before entering the while loop
     last_tonnage_change_time = datetime.now()
-
+    first_run = True  # flag to check if it's the first iteration of the loop
+    
     async with server:
         while True:
             await asyncio.sleep(1)
@@ -174,7 +175,6 @@ async def main():
             current_train_speed = await train_speed.get_value()
             
             last_tonnage_change_time = datetime.now() - timedelta(seconds=TONNAGE_CHANGE_INTERVAL)  # initializing to ensure immediate update on first run
-            first_run = True  # flag to check if it's the first iteration of the loop
 
             # Then, inside your while loop:
             current_time = datetime.now()
