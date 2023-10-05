@@ -167,7 +167,7 @@ async def main():
     # Initialize last_tonnage_change_time before entering the while loop
     last_tonnage_change_time = datetime.now()
     first_run = True  # flag to check if it's the first iteration of the loop
-    
+
     async with server:
         while True:
             await asyncio.sleep(1)
@@ -179,6 +179,10 @@ async def main():
             # Then, inside your while loop:
             current_time = datetime.now()
 
+            print(f"Current time: {current_time}")
+            print(f"Last tonnage change time: {last_tonnage_change_time}")
+            print(f"Time difference: {(current_time - last_tonnage_change_time).seconds}")
+            print(f"First run: {first_run}")
             if first_run or (current_time - last_tonnage_change_time).seconds >= TONNAGE_CHANGE_INTERVAL:
                 update_tonnage = random.uniform(0.8 * DEFAULT_TONNAGE, 1.2 * DEFAULT_TONNAGE)  # Vary tonnage by ±20%
                 print(f"Updating tonnage at {current_time}")
