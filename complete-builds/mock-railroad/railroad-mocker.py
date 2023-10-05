@@ -164,6 +164,9 @@ async def main():
 
     start_time = datetime.now()
 
+    # Initialize last_tonnage_change_time before entering the while loop
+    last_tonnage_change_time = datetime.now()
+
     async with server:
         while True:
             await asyncio.sleep(1)
