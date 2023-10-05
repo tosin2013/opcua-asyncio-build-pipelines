@@ -197,7 +197,7 @@ async def main():
                 wind_speed_value = await wind_speed.get_value()
 
             # Adjusted PID calculation with tonnage factor
-            tonnage_factor = DEFAULT_TONNAGE / current_train_tonnage  # Assuming more tonnage means less acceleration
+            tonnage_factor = DEFAULT_TONNAGE / new_tonnage  # Assuming more tonnage means less acceleration
             current_speed_difference = TARGET_SPEED - current_train_speed
             proportional = kp * current_speed_difference * tonnage_factor
             integral_error += ki * current_speed_difference * tonnage_factor
@@ -273,7 +273,7 @@ async def main():
             DAMPING_RATE_GAUGE.set(damping_rate)
             TRAIN_TONNAGE.set(new_tonnage)
 
-            _logger.info(f"Train conditions: Speed={new_train_speed}, Acceleration={new_train_acceleration}, primary_suspension_stiffness={primary_suspension_stiffness}, secondary_suspension_stiffness={secondary_suspension_stiffness}, damping_rate={damping_rate}, Train Tonnage={current_train_tonnage}")
+            _logger.info(f"Train conditions: Speed={new_train_speed}, Acceleration={new_train_acceleration}, primary_suspension_stiffness={primary_suspension_stiffness}, secondary_suspension_stiffness={secondary_suspension_stiffness}, damping_rate={damping_rate}, Train Tonnage={new_tonnage}")
             _logger.info(f"Environmental conditions: Outside Temperature={outside_temp_value}, Humidity={humidity_value}, Wind Speed={wind_speed_value}")
 
 
