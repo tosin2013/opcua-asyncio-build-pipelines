@@ -178,8 +178,8 @@ async def main():
 
             try:
                 if (current_time - last_tonnage_change_time).seconds >= TONNAGE_CHANGE_INTERVAL:
-                    new_tonnage = random.uniform(0.8 * DEFAULT_TONNAGE, 1.2 * DEFAULT_TONNAGE)  # Vary tonnage by ±20%
-                    await train_tonnage.write_value(new_tonnage)
+                    update_tonnage = random.uniform(0.8 * DEFAULT_TONNAGE, 1.2 * DEFAULT_TONNAGE)  # Vary tonnage by ±20%
+                    await train_tonnage.write_value(update_tonnage)
                     last_tonnage_change_time = current_time  # reset the last change time
             except NameError:  # if last_tonnage_change_time or new_tonnage is not defined yet
                 last_tonnage_change_time = current_time  # initialize it fo
